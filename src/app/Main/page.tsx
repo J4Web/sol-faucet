@@ -52,7 +52,7 @@ export default function Main() {
                 <div className="flex justify-between items-center mb-8">
                     <div className="flex items-center gap-3">
                         <Droplets className="h-10 w-10 text-white" />
-                        <h1 className="text-3xl font-bold text-white tracking-tight">Solana Faucet</h1>
+                       <h1 className="hidden md:block text-3xl font-bold text-white tracking-tight">Solana Faucet</h1>
                     </div>
                     <WalletMultiButton className="wallet-button"
                         style={
@@ -61,18 +61,8 @@ export default function Main() {
                                 color: 'white',
                                 border: '1px solid white',
                                 borderRadius: '0.5rem',
-                                padding: '0.5rem 1rem',
-                                fontSize: '1rem',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem'
                             }
                         }
-
-
-
                     />
                 </div>
 
