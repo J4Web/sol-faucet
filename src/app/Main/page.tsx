@@ -54,7 +54,26 @@ export default function Main() {
                         <Droplets className="h-10 w-10 text-white" />
                         <h1 className="text-3xl font-bold text-white tracking-tight">Solana Faucet</h1>
                     </div>
-                    <WalletMultiButton className="wallet-button" />
+                    <WalletMultiButton className="wallet-button"
+                        style={
+                            {
+                                backgroundColor: 'transparent',
+                                color: 'white',
+                                border: '1px solid white',
+                                borderRadius: '0.5rem',
+                                padding: '0.5rem 1rem',
+                                fontSize: '1rem',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }
+                        }
+
+
+
+                    />
                 </div>
 
                 <Card className="backdrop-blur-md bg-white/10 border-none shadow-2xl">
