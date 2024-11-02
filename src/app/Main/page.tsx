@@ -108,7 +108,7 @@ export default function Main() {
 
                         <Button
                             className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
-                            disabled={!isConnected}
+                            disabled={!isConnected || isLoading}
                             onClick={claimFaucet}
                         >
                             {isLoading ? 'Claiming...' : 'Request SOL'}
