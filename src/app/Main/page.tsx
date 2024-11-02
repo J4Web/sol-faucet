@@ -1,52 +1,50 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-
 import { Droplets, Copy } from 'lucide-react'
 import { Button } from '../Components/Button'
 import { Input } from '../Components/Input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../Components/Card'
-import { Select } from '@radix-ui/react-select'
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Components/Select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Components/Select'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
 
-
 export default function Main() {
     const [isConnected, setIsConnected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [publicKey, setPublicKey] = useState(
-        '');
+    const [publicKey, setPublicKey] = useState('');
     const wallet = useWallet();
-    const { connection } = useConnection()
-    console.log(wallet.publicKey);
-
+    const { connection } = useConnection();
 
     const claimFaucet = async () => {
+        if (!wallet || !wallet.publicKey) {
+            alert("Wallet is not connected.");
+            return;
+        }
         setIsLoading(true);
         try {
-            if (wallet && wallet.publicKey) {
-                await connection.requestAirdrop(wallet.publicKey as PublicKey, 1000000000);
-                alert('SOL tokens requested successfully');
-            }
+            await connection.requestAirdrop(wallet.publicKey as PublicKey, 1000000000);
+            alert('SOL tokens requested successfully');
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        if (wallet.publicKey) {
-            setIsConnected(true)
-            setPublicKey(wallet.publicKey.toString())
+        if (wallet && wallet.connected && wallet?.publicKey) {
+            setIsConnected(true);
+            setPublicKey(wallet.publicKey.toString());
+        } else {
+            setIsConnected(false);
+            setPublicKey('');
         }
-    }, [wallet])
+    }, [wallet]);
 
     const formatPublicKey = (key: string) => {
-        if (!key) return ''
-        return `${key.slice(0, 10)}...${key.slice(-4)}`
-    }
+        if (!key) return '';
+        return `${key.slice(0, 10)}...${key.slice(-4)}`;
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-700 via-pink-600 to-orange-500 p-8 flex flex-col items-center justify-center">
@@ -56,15 +54,7 @@ export default function Main() {
                         <Droplets className="h-10 w-10 text-white" />
                         <h1 className="text-3xl font-bold text-white tracking-tight">Solana Faucet</h1>
                     </div>
-                    <WalletMultiButton className="wallet-button" style={{
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        border: '1px solid white',
-                        padding: '8px 12px',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                    }} />
-
+                    <WalletMultiButton className="wallet-button" />
                 </div>
 
                 <Card className="backdrop-blur-md bg-white/10 border-none shadow-2xl">
@@ -83,7 +73,6 @@ export default function Main() {
                                 </SelectTrigger>
                                 <SelectContent className="bg-purple-800 text-white">
                                     <SelectItem value="devnet">Devnet</SelectItem>
-
                                 </SelectContent>
                             </Select>
                         </div>
@@ -93,7 +82,7 @@ export default function Main() {
                             <div className="relative">
                                 <Input
                                     placeholder="Wallet Address"
-                                    value={publicKey && formatPublicKey(publicKey as string)}
+                                    value={publicKey && formatPublicKey(publicKey)}
                                     disabled
                                     className="bg-white/20 border-none text-white placeholder-purple-200"
                                 />
@@ -102,7 +91,14 @@ export default function Main() {
                                         variant="ghost"
                                         size="icon"
                                         className="absolute right-1 top-1/2 transform -translate-y-1/2 text-purple-200 hover:text-white"
-                                        onClick={() => navigator.clipboard.writeText(publicKey)}
+                                        onClick={() => {
+                                            try {
+                                                navigator.clipboard.writeText(publicKey);
+                                                alert('Copied to clipboard');
+                                            } catch (error) {
+                                                console.error('Clipboard write failed:', error);
+                                            }
+                                        }}
                                     >
                                         <Copy className="h-4 w-4" />
                                     </Button>
@@ -114,7 +110,6 @@ export default function Main() {
                             className="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
                             disabled={!isConnected}
                             onClick={claimFaucet}
-
                         >
                             {isLoading ? 'Claiming...' : 'Request SOL'}
                         </Button>
@@ -127,7 +122,8 @@ export default function Main() {
                     <a target='_blank' href="https://github.com/j4web" className="text-white/80 hover:underline">
                         Visit my GitHub
                     </a>
-                </div>            </div>
+                </div>
+            </div>
         </div>
-    )
+    );
 }
