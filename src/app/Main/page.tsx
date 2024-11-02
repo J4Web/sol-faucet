@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 
-import { Wallet, Droplets, Copy } from 'lucide-react'
+import { Droplets, Copy } from 'lucide-react'
 import { Button } from '../Components/Button'
 import { Input } from '../Components/Input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../Components/Card'
@@ -11,6 +11,7 @@ import { Select } from '@radix-ui/react-select'
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from '../Components/Select'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { PublicKey } from '@solana/web3.js'
 
 
 export default function Main() {
@@ -26,8 +27,10 @@ export default function Main() {
     const claimFaucet = async () => {
         setIsLoading(true);
         try {
-            await connection.requestAirdrop(wallet.publicKey as any, 1000000000);
-            alert('SOL tokens requested successfully');
+            if (wallet && wallet.publicKey) {
+                await connection.requestAirdrop(wallet.publicKey as PublicKey, 1000000000);
+                alert('SOL tokens requested successfully');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -119,9 +122,12 @@ export default function Main() {
                 </Card>
 
                 <div className="mt-8 text-center text-white/80 text-sm">
-                    Powered by Solana | Built with ❤️ by Your Team
-                </div>
-            </div>
+                    Powered by Solana | Built with ❤️ by j4web
+                    <br />
+                    <a target='_blank' href="https://github.com/j4web" className="text-white/80 hover:underline">
+                        Visit my GitHub
+                    </a>
+                </div>            </div>
         </div>
     )
 }
